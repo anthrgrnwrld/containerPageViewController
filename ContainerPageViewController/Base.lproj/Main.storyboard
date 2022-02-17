@@ -17,10 +17,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MKg-FI-ALD">
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MKg-FI-ALD" customClass="ContainerPageView" customModule="ContainerPageViewController" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="184" width="414" height="538"/>
+                                <color key="backgroundColor" systemColor="systemOrangeColor"/>
                                 <connections>
-                                    <segue destination="KfC-dZ-Dp4" kind="embed" id="L6z-11-vc6"/>
+                                    <segue destination="ce0-kK-VrK" kind="embed" destinationCreationSelector="segeActionContainerPageViewController:sender:segueIdentifier:" id="UU8-CD-TsW"/>
                                 </connections>
                             </containerView>
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lBi-FW-KGG">
@@ -43,7 +44,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="wJt-Fu-pSG">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cell" id="wJt-Fu-pSG" customClass="TabItemCollectionViewCell" customModule="ContainerPageViewController" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="128" height="42"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="9QB-uo-Zfi">
@@ -64,12 +65,15 @@
                                             </constraints>
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="128" height="42"/>
+                                        <connections>
+                                            <outlet property="TabPageLabel" destination="WuJ-lY-zgK" id="UG8-s0-SJP"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" systemColor="systemGray4Color"/>
                         <constraints>
                             <constraint firstItem="ByS-dK-6iR" firstAttribute="width" secondItem="30W-C2-4m1" secondAttribute="width" id="0iZ-cd-SwS"/>
                             <constraint firstItem="lBi-FW-KGG" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="2dT-3I-unR"/>
@@ -90,7 +94,9 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="ContainerPageView" destination="MKg-FI-ALD" id="8Uo-sg-crI"/>
+                        <outlet property="ContainerPageView" destination="MKg-FI-ALD" id="bxf-Ak-OFD"/>
+                        <outlet property="TabCollectionView" destination="ByS-dK-6iR" id="8j2-tf-Phr"/>
+                        <outlet property="TabCollectionViewFromLayout" destination="Bof-7J-6r1" id="REB-EH-ftn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -98,19 +104,12 @@
             <point key="canvasLocation" x="18.840579710144929" y="83.705357142857139"/>
         </scene>
         <!--Container Page View Controller-->
-        <scene sceneID="g2J-Ev-Mg0">
+        <scene sceneID="AhS-UB-xSy">
             <objects>
-                <viewController id="KfC-dZ-Dp4" customClass="ContainerPageViewController" customModule="ContainerPageViewController" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Ujt-TL-xTI">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="538"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="TbR-Ul-q7k"/>
-                        <color key="backgroundColor" systemColor="systemYellowColor"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="xln-6y-jfz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="ce0-kK-VrK" customClass="ContainerPageViewController" customModule="ContainerPageViewController" customModuleProvider="target" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="THv-di-kw6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="855" y="84"/>
+            <point key="canvasLocation" x="883" y="84"/>
         </scene>
         <!--Second View Controller-->
         <scene sceneID="DHk-mm-RQa">
@@ -201,14 +200,14 @@
         <systemColor name="systemBrownColor">
             <color red="0.63529411764705879" green="0.51764705882352946" blue="0.36862745098039218" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
+        <systemColor name="systemGray4Color">
+            <color red="0.81960784313725488" green="0.81960784313725488" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemOrangeColor">
             <color red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemPurpleColor">
             <color red="0.68627450980392157" green="0.32156862745098042" blue="0.87058823529411766" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="systemYellowColor">
-            <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

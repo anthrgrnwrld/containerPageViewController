@@ -7,36 +7,37 @@
 
 import UIKit
 
-class ContainerPageViewController: UIViewController {
+class ContainerPageViewController: UIPageViewController {
     
-    //UIViewControllerをUIPageViewControllerに変化させるために必要。このようにブリッジを咬ます方法じゃないと細かな設定が出来ない。
-    private var tabPageViewController: UIPageViewController!
-    private var tabPageChildViewControllers: [UIViewController] = []
-    
-    
-    
-    //タブ情報だけど今回はStoruboardの管理のみで使用する
-    private struct TabPageContetntInfo {
-        let tabButtonLabel: String
-        let storyboardID: String
-        var isSelected: Bool = false
-        init(tabButtonLabel: String, storyboardID: String) {
-            self.tabButtonLabel = tabButtonLabel
-            self.storyboardID = storyboardID
-        }
-    }
-    private var tabContentsInfo = [
-        TabPageContetntInfo.init(tabButtonLabel: "First", storyboardID: "FirstViewController"),
-        TabPageContetntInfo.init(tabButtonLabel: "Second", storyboardID: "SecondViewController"),
-        TabPageContetntInfo.init(tabButtonLabel: "Third", storyboardID: "ThirdViewController"),
-        TabPageContetntInfo.init(tabButtonLabel: "First", storyboardID: "FirstViewController"),
-        TabPageContetntInfo.init(tabButtonLabel: "Second", storyboardID: "SecondViewController"),
-        TabPageContetntInfo.init(tabButtonLabel: "Third", storyboardID: "ThirdViewController"),
-        TabPageContetntInfo.init(tabButtonLabel: "First", storyboardID: "FirstViewController"),
-        TabPageContetntInfo.init(tabButtonLabel: "Second", storyboardID: "SecondViewController"),
-        TabPageContetntInfo.init(tabButtonLabel: "Third", storyboardID: "ThirdViewController"),
+    private var testPram: String = "initialValue"
+    private var tabButtonLabelStoryboardIDInfomations: [TabButtonLabelStoryboardIDInfo] = [
+//        ("1.First","FirstViewController"),
+//        ("2.Second","SecondViewController"),
+//        ("3.Third","ThirdViewController"),
+//        ("4.First","FirstViewController"),
+//        ("5.Second","SecondViewController"),
+//        ("6.Third","ThirdViewController"),
+//        ("7.First","FirstViewController"),
+//        ("8.Second","SecondViewController"),
+//        ("9.Third","ThirdViewController"),
     ]
     
+    // MARK: - Init     // iOS13以上
+    //for code
+    init?(coder: NSCoder, tabButtonLabelStoryboardIDInfomations: [TabButtonLabelStoryboardIDInfo], testPram: String) {
+        
+        self.testPram = testPram
+        self.tabButtonLabelStoryboardIDInfomations = tabButtonLabelStoryboardIDInfomations
+        
+        super.init(coder: coder)
+    }
+    
+    //for storyboard
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    var tabPageChildViewControllers: [UIViewController] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,33 +52,27 @@ class ContainerPageViewController: UIViewController {
 extension ContainerPageViewController {
     private func initTabPageView(){
         //TabPageViewControllerで表示するViewControllerをインスタンス化
-        tabContentsInfo.forEach({
+        tabButtonLabelStoryboardIDInfomations.forEach({
             self.tabPageChildViewControllers.append(getViewController(storyboardID: $0.storyboardID))
         })
 
-        //tabPageViewControllerの設定
-        self.tabPageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+        //tabPageViewControllerの設定(コードで行う場合)
+        //self.(UIPageViewController型) = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
 
         //最初に表示するViewControllerを指定する
-        //pageIndex = 0
-        self.tabPageViewController.setViewControllers([self.tabPageChildViewControllers[0]], direction: .forward, animated: true, completion: nil)
-        tabContentsInfo[0].isSelected = true
+        self.setViewControllers([self.tabPageChildViewControllers[0]], direction: .forward, animated: true, completion: nil)
         
         //PageViewControllerのDataSourceとの関連付け
-        self.tabPageViewController.dataSource = self
-        self.tabPageViewController.delegate = self
-        
-        //既存ViewControllerに追加
-        self.addChild(self.tabPageViewController)
-        self.view.addSubview(self.tabPageViewController.view!)
+        self.dataSource = self
+//        self.delegate = self
     }
     
     private func getViewController(storyboardID: String) -> UIViewController {
-        return storyboard!.instantiateViewController(identifier: storyboardID)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        return storyboard.instantiateViewController(identifier: storyboardID)
     }
     
-    private func changeTabPageChildViewController(targetIndex: Int) {
-        let currentIndex = tabContentsInfo.firstIndex(where: { $0.isSelected == true }) ?? 0
+    func changeTabPageChildViewController(targetIndex: Int, currentIndex: Int) {
         let direction: UIPageViewController.NavigationDirection
         if currentIndex < targetIndex {
             direction = .forward
@@ -86,7 +81,7 @@ extension ContainerPageViewController {
                 array.append(i + 1)
             }
             array.forEach({
-                self.tabPageViewController.setViewControllers([self.tabPageChildViewControllers[$0]], direction: direction, animated: true, completion: nil)
+                self.setViewControllers([self.tabPageChildViewControllers[$0]], direction: direction, animated: true, completion: nil)
             })
         } else if currentIndex > targetIndex {
             direction = .reverse
@@ -95,7 +90,7 @@ extension ContainerPageViewController {
                 array.insert(i, at: 0)
             }
             array.forEach({
-                self.tabPageViewController.setViewControllers([self.tabPageChildViewControllers[$0]], direction: direction, animated: true, completion: nil)
+                self.setViewControllers([self.tabPageChildViewControllers[$0]], direction: direction, animated: true, completion: nil)
             })
         } else {
             //処理無し
@@ -140,18 +135,15 @@ extension ContainerPageViewController: UIPageViewControllerDataSource {
 }
 
 extension ContainerPageViewController: UIPageViewControllerDelegate {
-    func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
-        //処理なし
-    }
-    
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-        if completed {
-            if let index = self.tabPageChildViewControllers.firstIndex(of: pageViewController.viewControllers!.first!) {
-                let currentIndex = tabContentsInfo.firstIndex(where: { $0.isSelected == true }) ?? 0
-                if index != 0 || currentIndex != index {
-                    //処理を書く
-                }
-            }
-        }
+        //containerPageViewController.delegate = self
+//        print("FGHJJJHGHNBVGFG")
+//        guard let delegate = delegate else {
+//            //処理なし
+//            return
+//        }
+        
+//        delegate.containerPageView(pageViewController, didFinishAnimating: finished, previousViewControllers: previousViewControllers, transitionCompleted: completed)
+        
     }
 }
