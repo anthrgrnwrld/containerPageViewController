@@ -9,13 +9,13 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    @IBOutlet weak var ContainerPageView: ContainerPageView!
-    @IBOutlet weak var TabCollectionView: UICollectionView!
-    @IBOutlet weak var TabCollectionViewFromLayout: UICollectionViewFlowLayout!
-    
-    private var containerPageViewController: ContainerPageViewController?
-    private var tabContentsInfomations: [TabPageContetntInfo] = []  //containerPageViewController内で表示しているページの内容の管理は本VCにて行う
-    
+    @IBOutlet weak private var containerParentView: UIView!
+    @IBOutlet weak private var TabCollectionView: UICollectionView!
+    @IBOutlet weak private var TabCollectionViewFromLayout: UICollectionViewFlowLayout!
+
+    //containerPageViewController内で表示しているページの内容の管理は本VCにて行う
+    private var containerPageView: ContainerPageView!
+    private var tabContentsInfomations: [TabPageContetntInfo] = []
     private struct TabPageContetntInfo {
         let tabButtonLabel: String
         let storyboardID: String
@@ -41,37 +41,40 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        //ContainerPageViewを追加
+        containerPageView = ContainerPageView(frame: CGRect.zero, tabButtonLabelStoryboardIDInfomations: tabButtonLabelStoryboardIDInfomations)
+        containerParentView.addSubview(containerPageView)
+        
+        //ConttainerPageViewの表示位置をStoryboardで配置しているcontainerParentViewと一致させる
+        containerPageView.setSameConstraint(equalTo: containerParentView)
+        
+        //containerPageViewDelegateを設定
+        containerPageView.delegate = self
         
         //TabCollectionView初期化
         self.initTabCollectionView()
-        
-        self.ContainerPageView.delegate = self
-    }
-
-    @IBSegueAction func segeActionContainerPageViewController(_ coder: NSCoder, sender: Any?, segueIdentifier: String?) -> ContainerPageViewController? {
-        ContainerPageView.containerPageViewController =  ContainerPageViewController(coder: coder, tabButtonLabelStoryboardIDInfomations: tabButtonLabelStoryboardIDInfomations, testPram: "OK!!!!!!!!!!!!!!")
-        ContainerPageView.containerPageViewController!.delegate = ContainerPageView
-        return ContainerPageView.containerPageViewController
-        
     }
 }
 
 //TabCollectionView初期化
 extension ViewController {
     private func initTabCollectionView() {
+        //TabCollectionViewのdelegateを設定
         TabCollectionView.delegate = self
         TabCollectionView.dataSource = self
-        ContainerPageView.delegate = self
         
-//        containerPageViewController?.tabPageViewController.delegate = self
-        
+        //Tabの表示文字列と紐づくStoryboardIDを配列にセットする
         tabButtonLabelStoryboardIDInfomations.forEach({
             self.tabContentsInfomations.append(TabPageContetntInfo.init(tabButtonLabel: $0.tabButtonLabel, storyboardID: $0.storyboardID))
         })
         
-        tabContentsInfomations[0].isSelected = true
+        if !tabContentsInfomations.isEmpty {
+            //選択Tabの初期値をセット(0番目)
+            tabContentsInfomations[0].isSelected = true
+        }
         
+        //TabCollectionViewのUI設定
         let height = TabCollectionView.frame.height
         let width = height * 3
         TabCollectionViewFromLayout.estimatedItemSize = CGSize(width: width, height: height)
@@ -79,19 +82,17 @@ extension ViewController {
         TabCollectionViewFromLayout.minimumLineSpacing = 1          //列間
         TabCollectionViewFromLayout.minimumInteritemSpacing = 1     //Section間 (0にしたら横向きにしたら表示がおかしくなる)
     }
-    
-    
 }
 
 extension ViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        //TabCollectionViewを選択Tabにスクロールする
         TabCollectionView.scrollToItem(at: IndexPath(row: indexPath.row, section: 0), at: .centeredHorizontally, animated: true)
         
         //containerPageViewControllerの中の表示ページを切り替える
         let currentIndex = tabContentsInfomations.firstIndex(where: { $0.isSelected == true }) ?? 0
-        containerPageViewController?.changeTabPageChildViewController(targetIndex: indexPath.row, currentIndex: currentIndex)
-        
-        setSelectedTabContentsInfo(index: indexPath.row)
+        containerPageView.changeContainerPageViewController(targetIndex: indexPath.row, currentIndex: currentIndex)
+        setSelectedTabContentsInfo(index: indexPath.row)    //現在選択されているタブ情報を更新
     }
     
     
@@ -128,16 +129,10 @@ extension ViewController: UICollectionViewDataSource {
 }
 
 extension ViewController: ContainerPageViewDelegate {
-    func containerPageView(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-        if completed {
-            if let index = ContainerPageView.containerPageViewController!.tabPageChildViewControllers.firstIndex(of: pageViewController.viewControllers!.first!) {
-//                let currentIndex = tabContentsInfo.firstIndex(where: { $0.isSelected == true }) ?? 0
-//                if index != 0 || currentIndex != index {
-//                    //タブの選択系の処理を書く処理を書く
-//                }
-                print("AAAAAAAAAAAAAAA")
-            }
-        }
+    //ContainerPageViewをスワイプ完了後に実行される
+    func containerPageView(selectedIndexAfterSwipe: Int) {
+            TabCollectionView.scrollToItem(at: IndexPath(row: selectedIndexAfterSwipe, section: 0), at: .centeredHorizontally, animated: true)
+            setSelectedTabContentsInfo(index: selectedIndexAfterSwipe)
     }
 }
 

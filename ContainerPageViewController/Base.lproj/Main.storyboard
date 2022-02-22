@@ -17,12 +17,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MKg-FI-ALD" customClass="ContainerPageView" customModule="ContainerPageViewController" customModuleProvider="target">
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MKg-FI-ALD">
                                 <rect key="frame" x="0.0" y="184" width="414" height="538"/>
                                 <color key="backgroundColor" systemColor="systemOrangeColor"/>
-                                <connections>
-                                    <segue destination="ce0-kK-VrK" kind="embed" destinationCreationSelector="segeActionContainerPageViewController:sender:segueIdentifier:" id="UU8-CD-TsW"/>
-                                </connections>
                             </containerView>
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lBi-FW-KGG">
                                 <rect key="frame" x="0.0" y="44" width="414" height="44"/>
@@ -94,9 +91,9 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="ContainerPageView" destination="MKg-FI-ALD" id="bxf-Ak-OFD"/>
                         <outlet property="TabCollectionView" destination="ByS-dK-6iR" id="8j2-tf-Phr"/>
                         <outlet property="TabCollectionViewFromLayout" destination="Bof-7J-6r1" id="REB-EH-ftn"/>
+                        <outlet property="containerParentView" destination="MKg-FI-ALD" id="T7c-hv-mkL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -106,7 +103,7 @@
         <!--Container Page View Controller-->
         <scene sceneID="AhS-UB-xSy">
             <objects>
-                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="ce0-kK-VrK" customClass="ContainerPageViewController" customModule="ContainerPageViewController" customModuleProvider="target" sceneMemberID="viewController"/>
+                <pageViewController storyboardIdentifier="ContainerPageViewController" autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="ce0-kK-VrK" customClass="ContainerPageViewController" customModule="ContainerPageViewController" customModuleProvider="target" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="THv-di-kw6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="883" y="84"/>
