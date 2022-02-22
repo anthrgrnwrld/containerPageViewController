@@ -12,21 +12,10 @@ class ViewController: UIViewController {
     @IBOutlet weak private var containerParentView: UIView!
     @IBOutlet weak private var TabCollectionView: UICollectionView!
     @IBOutlet weak private var TabCollectionViewFromLayout: UICollectionViewFlowLayout!
-
-    //containerPageViewController内で表示しているページの内容の管理は本VCにて行う
     private var containerPageView: ContainerPageView!
-    private var tabContentsInfomations: [TabPageContetntInfo] = []
-    private struct TabPageContetntInfo {
-        let tabButtonLabel: String
-        let storyboardID: String
-        var isSelected: Bool = false
-        init(tabButtonLabel: String, storyboardID: String) {
-            self.tabButtonLabel = tabButtonLabel
-            self.storyboardID = storyboardID
-        }
-    }
     
-    //TabCollectionViewで表示するボタンのラベルとそれに紐づくstoryboardID
+    //TabCollectionViewで表示するTabボタンのラベルとそれに紐づくStoryboardID
+    //以下に設定したTabボタンのラベル用の文字列とそれに紐づくUIViewControllerのStoryboarIDによってcontainerPageViewに表示されるものが決まる
     private let tabButtonLabelStoryboardIDInfomations: [TabButtonLabelStoryboardIDInfo] = [
         ("1.First","FirstViewController"),
         ("2.Second","SecondViewController"),
@@ -38,6 +27,18 @@ class ViewController: UIViewController {
         ("8.Second","SecondViewController"),
         ("9.Third","ThirdViewController"),
     ]
+    
+    //containerPageViewController内で表示しているページの内容の管理は本VCにて行う
+    private var tabContentsInfomations: [TabPageContetntInfo] = []
+    private struct TabPageContetntInfo {
+        let tabButtonLabel: String
+        let storyboardID: String
+        var isSelected: Bool = false
+        init(tabButtonLabel: String, storyboardID: String) {
+            self.tabButtonLabel = tabButtonLabel
+            self.storyboardID = storyboardID
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
