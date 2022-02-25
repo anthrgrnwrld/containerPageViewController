@@ -19,7 +19,7 @@
                         <subviews>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MKg-FI-ALD">
                                 <rect key="frame" x="0.0" y="184" width="414" height="538"/>
-                                <color key="backgroundColor" systemColor="systemOrangeColor"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </containerView>
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lBi-FW-KGG">
                                 <rect key="frame" x="0.0" y="44" width="414" height="44"/>
